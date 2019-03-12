@@ -43,6 +43,31 @@ export class ContactController {
         });
     }
 
+    public findContactsByQuery (req: Request, res: Response) {
+        try {
+            const bodyValue = req.body.value;
+
+            console.info('query to find is :',[req.body,bodyValue]);
+
+            let query ={$or:[
+                    {firstName:{$regex: bodyValue.toLowerCase(), $options: "$i"}},
+                    {lastName:{$regex: bodyValue.toLowerCase(), $options: "$i"}},
+                    {email:{$regex: bodyValue.toLowerCase(), $options: "$i"}},
+                    {company: {$regex: bodyValue.toLowerCase(), $options: "$i"}}
+                ]};
+
+            Contact.find(query).skip(3).limit(5).select({firstName: true}).exec().then(docs=>{
+                res.json(docs);
+            })
+
+        }catch (e) {
+            console.error(e);
+            res.send(e);
+            res.status(404).send(e.toString());
+        }
+    }
+
+
     public updateContact (req: Request, res: Response) {
         Contact.findOneAndUpdate({ _id: req.params.contactId }, req.body, { new: true }, (err, contact) => {
             if(err){

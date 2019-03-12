@@ -1,18 +1,17 @@
 import * as express from "express";
-import * as book from "./models/book";
 import * as mongoose from "mongoose";
-import {Mongodb} from "./mongodb-connection/Mongodb";
-import {Request} from "express";
-import {Response} from "express";
 import * as bodyParser from "body-parser";
+import { AppRoutes } from "./routes/appRoutes";
 
-import { Routes } from "./routes/Routes";
 
 class App {
 
     public app: express.Application;
-    public routePrv: Routes = new Routes();
-    public mongoUrl: string = 'mongodb://localhost/CRMdb';
+    public routePrv: AppRoutes = new AppRoutes();
+    public  currentHost = 'localhost';
+    public  databaseName =  'CRMdb';//'first-mongodb';
+
+    public mongoUrl: string = `mongodb://${this.currentHost}/${this.databaseName}`;
 
     constructor() {
         this.app = express();
