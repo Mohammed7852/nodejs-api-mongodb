@@ -1,13 +1,15 @@
 import * as mongoose from 'mongoose';
+import {strict} from "assert";
 
 const Schema = mongoose.Schema;
 
+
 export const ContactSchema = new Schema({
-    firstName: {
+    fname: {
         type: String,
         required: 'Enter a first name'
     },
-    lastName: {
+    lname: {
         type: String,
         required: 'Enter a last name'
     },
@@ -17,11 +19,13 @@ export const ContactSchema = new Schema({
     company: {
         type: String
     },
-    phone: {
+    mobileNumber: {
         type: Number
     },
     created_date: {
         type: Date,
         default: Date.now
-    }
-});
+    },
+    user:[],
+    temp:Object
+},{collection:'Contacts'});

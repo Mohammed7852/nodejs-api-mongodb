@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as mongoose from "mongoose";
 import * as bodyParser from "body-parser";
-import { AppRoutes } from "./routes/appRoutes";
+import { AppRoutes } from "./routes/AppRoutes";
 
 
 class App {
@@ -9,7 +9,7 @@ class App {
     public app: express.Application;
     public routePrv: AppRoutes = new AppRoutes();
     public  currentHost = 'localhost';
-    public  databaseName =  'CRMdb';//'first-mongodb';
+    public  databaseName =  'my-test-db';//'first-mongodb';
 
     public mongoUrl: string = `mongodb://${this.currentHost}/${this.databaseName}`;
 

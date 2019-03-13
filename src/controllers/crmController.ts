@@ -1,14 +1,37 @@
 import * as mongoose from 'mongoose';
-import { ContactSchema } from '../models/crmModel';
-import { Request, Response } from 'express';
+import {ContactSchema} from '../models/crmModel';
+import {Request, Response} from 'express';
 
 const Contact = mongoose.model('Contact', ContactSchema);
+
 export class ContactController {
 
     public addNewContact(req: Request, res: Response) {
-        let newContact = new Contact(req.body);
+        try {
+            console.info('creating this contact :',[req.body]);
+            let newContact = new Contact(req.body);
+            newContact.save().then(contact => {
+                res.json(contact);
+            })
+        } catch (e) {
+            res.send(e);
+        }
+    }
 
-        newContact.save((err, contact) => {
+    public getContacts(req: Request, res: Response) {
+        try {
+            console.info('getting all contacts !');
+            Contact.find().then(docs => {
+                res.json(docs);
+            });
+        } catch (e) {
+            console.error(e);
+            res.status(404).send(e);
+        }
+    }
+
+    public getContactWithID(req: Request, res: Response) {
+        Contact.findById(req.params.contactId, (err, contact) => {
             if (err) {
                 res.send(err);
             }
@@ -16,51 +39,26 @@ export class ContactController {
         });
     }
 
-    public getContacts (req: Request, res: Response) {
-        try {
-            console.info('getting all contacts !');
-            Contact.find({}, (err, contact) => {
-                if(err){
-                    console.error(err);
-                    res.status(404).send(err);
-                }
-                console.info(contact);
-                res.status(200).send(contact);
-            });
-        }catch (e) {
-            console.error(e);
-            res.status(404).send(e);
-        }
-
-    }
-
-    public getContactWithID (req: Request, res: Response) {
-        Contact.findById(req.params.contactId, (err, contact) => {
-            if(err){
-                res.send(err);
-            }
-            res.json(contact);
-        });
-    }
-
-    public findContactsByQuery (req: Request, res: Response) {
+    public findContactsByQuery(req: Request, res: Response) {
         try {
             const bodyValue = req.body.value;
 
-            console.info('query to find is :',[req.body,bodyValue]);
+            console.info('query to find is :', [req.body, bodyValue]);
 
-            let query ={$or:[
-                    {firstName:{$regex: bodyValue.toLowerCase(), $options: "$i"}},
-                    {lastName:{$regex: bodyValue.toLowerCase(), $options: "$i"}},
-                    {email:{$regex: bodyValue.toLowerCase(), $options: "$i"}},
+            let query = {
+                $or: [
+                    {firstName: {$regex: bodyValue.toLowerCase(), $options: "$i"}},
+                    {lastName: {$regex: bodyValue.toLowerCase(), $options: "$i"}},
+                    {email: {$regex: bodyValue.toLowerCase(), $options: "$i"}},
                     {company: {$regex: bodyValue.toLowerCase(), $options: "$i"}}
-                ]};
+                ]
+            };
 
-            Contact.find(query).skip(3).limit(5).select({firstName: true}).exec().then(docs=>{
+            Contact.find(query).skip(3).limit(5).select({firstName: true}).exec().then(docs => {
                 res.json(docs);
             })
 
-        }catch (e) {
+        } catch (e) {
             console.error(e);
             res.send(e);
             res.status(404).send(e.toString());
@@ -68,21 +66,21 @@ export class ContactController {
     }
 
 
-    public updateContact (req: Request, res: Response) {
-        Contact.findOneAndUpdate({ _id: req.params.contactId }, req.body, { new: true }, (err, contact) => {
-            if(err){
+    public updateContact(req: Request, res: Response) {
+        Contact.findOneAndUpdate({_id: req.params.contactId}, req.body, {new: true}, (err, contact) => {
+            if (err) {
                 res.send(err);
             }
             res.json(contact);
         });
     }
 
-    public deleteContact (req: Request, res: Response) {
-        Contact.remove({ _id: req.params.contactId }, (err, contact) => {
-            if(err){
+    public deleteContact(req: Request, res: Response) {
+        Contact.remove({_id: req.params.contactId}, (err, contact) => {
+            if (err) {
                 res.send(err);
             }
-            res.json({ message: 'Successfully deleted contact!'});
+            res.json({message: 'Successfully deleted contact!'});
         });
     }
 
