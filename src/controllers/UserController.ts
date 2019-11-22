@@ -50,11 +50,10 @@ export class UserController {
     }
 
     public deleteUser(req: Request, res: Response) {
-        User.remove({_id: req.params.contactId}, (err, contact) => {
-            if (err) {
-                res.send(err);
-            }
-            res.json({message: 'Successfully deleted user!'});
+        User.remove({_id: req.params.contactId}).exec().then(value => {
+            console.log('success remove');
+        },reason => {
+            console.error('error remove',reason);
         });
     }
 

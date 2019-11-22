@@ -25,8 +25,17 @@ class App {
     }
 
     private mongoSetup(): void{
-        mongoose.Promise = global.Promise;
-        mongoose.connect(this.mongoUrl);
+
+        mongoose.set('useNewUrlParser', true);
+        mongoose.set('useFindAndModify', false);
+        mongoose.set('useCreateIndex', true);
+        mongoose.set('useUnifiedTopology', true);
+
+        mongoose.connect(this.mongoUrl).then(value => {
+            console.log('success connection')
+        },reason => {
+            console.error('error connection',reason)
+        });
     }
 
 }

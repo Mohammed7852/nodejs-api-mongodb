@@ -76,11 +76,10 @@ export class ContactController {
     }
 
     public deleteContact(req: Request, res: Response) {
-        Contact.remove({_id: req.params.contactId}, (err, contact) => {
-            if (err) {
-                res.send(err);
-            }
-            res.json({message: 'Successfully deleted contact!'});
+        Contact.remove({_id: req.params.contactId}).exec().then(value => {
+            console.log('success remove');
+        },reason => {
+            console.error('error remove',reason);
         });
     }
 
