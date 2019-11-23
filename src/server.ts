@@ -1,6 +1,6 @@
 import app from "./index";
 
-const PORT = 3300;
+const PORT = 3100;
 
 app.set("port", process.env.PORT || PORT);
 
