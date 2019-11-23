@@ -8,7 +8,11 @@ export class ObjectController {
 
     public insertObject(req: Request, res: Response) {
         try {
-            console.info(['create object function',[JSON.stringify(req.body)]]);
+            console.log({
+                note:'we are in insertObject',
+                params:req.params,
+                body:req.body
+            });
             new BitCoinObject(req.body).save().then(value => {
                 console.log('success create bitcoin address',value);
                 res.json(value);
@@ -22,7 +26,11 @@ export class ObjectController {
 
     public insertArray(req: Request, res: Response) {
         try {
-            console.info(['insertArray',[JSON.stringify(req.body)]]);
+            console.log({
+                note:'we are in insertArray',
+                params:req.params,
+                body:req.body
+            });
             BitCoinObject.create({Data:req.body}).then(value => {
                 console.log('success create bitcoin addresses',value);
                 res.json(value);
@@ -37,7 +45,11 @@ export class ObjectController {
 
     public getObjects(req: Request, res: Response) {
         try {
-            console.info('getting all objects !');
+            console.log({
+                note:'we are in getObjects',
+                params:req.params,
+                body:req.body
+            });
             BitCoinObject.find().then(docs => {
                 console.log('found objects',docs);
                 res.json(docs);
@@ -49,7 +61,11 @@ export class ObjectController {
     }
 
     public getObject(req: Request, res: Response) {
-        console.log('findObject :: ',req.params.value);
+        console.log({
+            note:'we are in get object',
+            params:req.params,
+            body:req.body
+        });
         let query = BitCoinObject.find(
             {$or:[{privateKey:req.params.vlaue},{compressedAddress:req.params.vlaue},
         {index:req.params.vlaue},{unCompressedAddress:req.params.vlaue}]});
