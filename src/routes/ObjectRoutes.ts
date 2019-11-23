@@ -9,7 +9,8 @@ export class ObjectRoutes {
     public routes(app): void {
         app.route(this.path)
             .get(this.objectController.getObjects)
-            .post(this.objectController.insertObject);
+            .post(this.objectController.insertObject)
+            .put(this.objectController.updateObject);
 
         app.route(this.path+'/insertArray')
             .post(this.objectController.insertArray);

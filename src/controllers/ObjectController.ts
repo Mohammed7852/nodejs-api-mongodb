@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import {Request, Response} from 'express';
 import {BitCoinAddressSchema} from "../models/BitCoinAddressModel";
 
-const BitCoinObject = mongoose.model('BitCoinObject', BitCoinAddressSchema);
+const BitCoinObject = mongoose.model('BitCoinObject', BitCoinAddressSchema,'BitCoinObject');
 
 export class ObjectController {
 
@@ -26,17 +26,20 @@ export class ObjectController {
 
     public insertArray(req: Request, res: Response) {
         try {
+            const insertArray = req.body;
             console.log({
                 note:'we are in insertArray',
                 params:req.params,
-                body:req.body
+                body:req.body,
+                insertArray:insertArray
             });
-            BitCoinObject.create({Data:req.body}).then(value => {
-                console.log('success create bitcoin addresses',value);
-                res.json(value);
-            },reason => {
-                res.status(500).json(reason);
-            });
+            BitCoinObject.collection.insertMany(insertArray).then(response=>{
+                console.log('success insert array');
+                res.send(response);
+            },reason=>{
+                console.error('error insert array');
+                res.send(reason);
+            })
         } catch (e) {
             res.send(e);
         }
@@ -66,15 +69,33 @@ export class ObjectController {
             params:req.params,
             body:req.body
         });
-        let query = BitCoinObject.find(
-            {$or:[{privateKey:req.params.vlaue},{compressedAddress:req.params.vlaue},
-        {index:req.params.vlaue},{unCompressedAddress:req.params.vlaue}]});
-        query.exec().then(value => {
-           console.log('success find object',value);
-           res.send(value);
-        },reason => {
+        const queryValue  = req.params.value;
+        BitCoinObject.find({$or:[{index:queryValue},{privateKey:queryValue},{compressedAddress:queryValue},
+        {unCompressedAddress:queryValue}]}).exec().then(response=>{
+            res.send(response);
+        },reason=>{
             res.send(reason);
         });
+    }
+
+    public updateObject(req:Request,res:Response){
+        try {
+            console.log({
+                note:'we are in updateObject',
+                params:req.params,
+                body:req.body
+            });
+            const updateObject = req.body;
+            BitCoinObject.updateOne({index:updateObject.index},updateObject).exec().then(response=>{
+                console.info('success update object', response);
+                res.send(response);
+            },reason=>{
+                console.error('error update object');
+                res.send(reason);
+            });
+        } catch (error) {
+            res.send(error);
+        }
     }
 
 }
