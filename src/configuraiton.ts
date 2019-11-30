@@ -1,7 +1,7 @@
 
 export let mysqlConfiguration ={
     type: "mysql",
-    host: "35.222.108.74",
+    host: "localhost",
     port: 3306,
     username: "shabanah",
     password: "shabanah",
